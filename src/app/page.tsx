@@ -57,7 +57,7 @@ const apps = [
     icon: Palette,
     gradient: "from-pink-500 to-rose-600",
     category: "Design",
-    isNew: false,
+    isNew: true,
     isFeatured: false,
   },
   {
