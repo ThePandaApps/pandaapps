@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@types/diff": "^7.0.2",
     "@types/dompurify": "^3.0.5",
     "browser-image-compression": "^2.0.2",
+    "diff": "^8.0.3",
     "dompurify": "^3.3.1",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
