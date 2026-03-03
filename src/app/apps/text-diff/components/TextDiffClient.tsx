@@ -201,7 +201,7 @@ export default function TextDiffClient() {
       <div className="mx-auto w-full max-w-[1440px] flex-1 flex flex-col">
 
         {/* ── INPUT PANELS ──────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 border-b border-white/[0.07]">
+        <div className="grid grid-cols-2 border-b border-white/[0.07]">
           <InputPane
             label="Text A"
             sublabel="original / before"
@@ -212,7 +212,7 @@ export default function TextDiffClient() {
             copied={copied === "left"}
             placeholder="Paste your original / before text here…"
           />
-          <div className="hidden sm:block border-l border-white/[0.07]" />
+          <div className="border-l border-white/[0.07]" />
           <InputPane
             label="Text B"
             sublabel="modified / after"
