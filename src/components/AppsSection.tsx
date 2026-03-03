@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import {
-  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles, Coins, TrendingUp, Fuel,
+  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles, Coins, TrendingUp, Fuel, Bot,
 } from "lucide-react";
 import AppCard from "@/components/AppCard";
 
@@ -105,6 +105,17 @@ const apps = [
     category: "Utility",
     isNew: true,
     isFeatured: false,
+  },
+  {
+    title: "AI Model Benchmarks",
+    description:
+      "Compare 15+ frontier AI models across 18 benchmarks — reasoning, coding, math, knowledge, multimodal & instruction following. Scores from official papers & leaderboards.",
+    href: "/apps/ai-benchmarks",
+    icon: Bot,
+    gradient: "from-violet-500 to-indigo-600",
+    category: "AI",
+    isNew: true,
+    isFeatured: true,
   },
 ];
 
