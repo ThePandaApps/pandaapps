@@ -6,7 +6,7 @@ import {
   Bot, ChevronLeft, ChevronDown, ChevronUp, ChevronsUpDown,
   Info, ExternalLink, Search, Lock, Cpu, Gift,
   BarChart3, Target, Table2, ArrowUpRight, RefreshCw,
-  Code2, Brain, Eye, MessageSquare, HardDrive, Filter,
+  Code2, Brain, Eye, MessageSquare, HardDrive, Filter, Sparkles,
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -539,6 +539,17 @@ export default function AIBenchmarksClient({ models }: Props) {
               {s.sub && <p className="text-[10px] text-muted">{s.sub}</p>}
             </div>
           ))}
+          {/* Auto-discovered count — only if > 0 */}
+          {MODELS.filter(m => m.isAutoDiscovered).length > 0 && (
+            <div className="rounded-xl border border-violet-500/30 bg-violet-500/5 px-4 py-3">
+              <p className="text-[10px] uppercase tracking-wider text-muted mb-0.5">Auto-Discovered</p>
+              <p className="text-lg font-bold text-violet-500 flex items-center gap-1">
+                <Sparkles className="h-4 w-4" />
+                {MODELS.filter(m => m.isAutoDiscovered).length}
+              </p>
+              <p className="text-[10px] text-muted">new from Arena</p>
+            </div>
+          )}
         </div>
 
         {/* ── Global Filters ── */}
@@ -780,7 +791,14 @@ export default function AIBenchmarksClient({ models }: Props) {
                               <span className="text-xs font-medium block" style={{ color: pc(m.provider) }}>
                                 {m.provider}
                               </span>
-                              <span className="text-sm font-semibold">{m.name}</span>
+                              <span className="text-sm font-semibold flex items-center gap-1">
+                                {m.isAutoDiscovered && (
+                                  <span title="Auto-discovered from Arena" className="inline-flex items-center gap-0.5 text-[8px] font-bold rounded-full px-1.5 py-0.5 bg-violet-500/15 text-violet-500">
+                                    <Sparkles className="h-2 w-2" /> NEW
+                                  </span>
+                                )}
+                                {m.name}
+                              </span>
                               {m.params && (
                                 <span className="text-[10px] text-muted ml-1.5 font-mono">{m.params}</span>
                               )}

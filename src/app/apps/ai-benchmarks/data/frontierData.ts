@@ -24,6 +24,7 @@ export type BenchmarkModel = {
   canRunLocally: boolean;
   tags: ModelTag[];
   params?: string;
+  isAutoDiscovered?: boolean;          // true = found via Arena, not in static list
   gpqa: number | null;
   swe: number | null;
   arcagi2: number | null;
