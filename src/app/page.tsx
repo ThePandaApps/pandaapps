@@ -46,7 +46,7 @@ const apps = [
     icon: FileText,
     gradient: "from-purple-500 to-violet-600",
     category: "Productivity",
-    isNew: false,
+    isNew: true,
     isFeatured: false,
   },
   {
