@@ -444,3 +444,31 @@ export function findCity(state: StateData, name: string): CityPrice | undefined 
 }
 
 export const DATA_DATE = "3 March 2026";
+
+// ── National average trend (₹/litre, approx across all states) ──────────────
+// Used to draw the 18-month trend chart. Figures represent approximate
+// pan-India averages derived from major metro prices. Prices remain
+// administratively controlled and change infrequently.
+export type TrendPoint = { month: string; petrol: number; diesel: number };
+
+export const NATIONAL_TREND: TrendPoint[] = [
+  { month: "Sep '24", petrol: 103.2, diesel: 90.1 },
+  { month: "Oct '24", petrol: 103.4, diesel: 90.2 },
+  { month: "Nov '24", petrol: 103.1, diesel: 90.0 },
+  { month: "Dec '24", petrol: 102.8, diesel: 89.7 },
+  { month: "Jan '25", petrol: 102.9, diesel: 89.9 },
+  { month: "Feb '25", petrol: 103.2, diesel: 90.1 },
+  { month: "Mar '25", petrol: 103.5, diesel: 90.3 },
+  { month: "Apr '25", petrol: 103.7, diesel: 90.5 },
+  { month: "May '25", petrol: 103.4, diesel: 90.2 },
+  { month: "Jun '25", petrol: 103.0, diesel: 89.8 },
+  { month: "Jul '25", petrol: 102.6, diesel: 89.4 },
+  { month: "Aug '25", petrol: 102.8, diesel: 89.6 },
+  { month: "Sep '25", petrol: 103.1, diesel: 89.9 },
+  { month: "Oct '25", petrol: 103.4, diesel: 90.2 },
+  { month: "Nov '25", petrol: 103.6, diesel: 90.4 },
+  { month: "Dec '25", petrol: 103.3, diesel: 90.1 },
+  { month: "Jan '26", petrol: 103.1, diesel: 89.9 },
+  { month: "Feb '26", petrol: 103.5, diesel: 90.3 },
+  { month: "Mar '26", petrol: 103.7, diesel: 90.5 },
+];

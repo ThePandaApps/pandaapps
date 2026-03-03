@@ -15,6 +15,7 @@ import {
   Globe,
 } from "lucide-react";
 import { FUEL_DATA, findState, findCity, DATA_DATE, type StateData, type CityPrice } from "../data/fuelData";
+import PriceTrendChart from "./PriceTrendChart";
 
 type LocationStatus = "idle" | "detecting" | "found" | "error" | "denied";
 
@@ -309,6 +310,9 @@ export default function FuelPricesClient() {
             Rounded to the paise (₹0.01).
           </p>
         </div>
+
+        {/* Price trend chart */}
+        <PriceTrendChart />
 
         {/* Data note */}
         <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 px-5 py-3.5 flex items-start gap-3">
