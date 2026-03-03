@@ -111,7 +111,7 @@ const features = [
   {
     icon: Shield,
     title: "Privacy First",
-    description: "Your data stays in your browser. We don't track, store, or sell your information.",
+    description: "Your data stays in your browser. Panda doesn't track, store, or sell your information.",
   },
   {
     icon: Sparkles,
@@ -136,7 +136,7 @@ export default function HomePage() {
               App Collection
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4">
-              Explore Our Apps
+              Explore Panda Apps
             </h2>
             <p className="text-muted max-w-2xl mx-auto text-lg">
               Each app is carefully crafted to be fast, beautiful, and useful. 
@@ -173,7 +173,7 @@ export default function HomePage() {
               Why Panda Apps?
             </h2>
             <p className="text-muted max-w-2xl mx-auto text-lg">
-              We believe great tools should be accessible to everyone.
+              Panda believes great tools should be accessible to everyone.
             </p>
           </div>
 
