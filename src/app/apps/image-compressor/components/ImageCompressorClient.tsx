@@ -276,7 +276,7 @@ export default function ImageCompressorClient() {
                   </span>
                 </div>
                 <p className="text-sm text-muted mt-0.5">
-                  Compress images with intelligent algorithms — no quality loss. 100% client-side.
+                  Compress images with intelligent algorithms — no quality loss. Your images never leave your device.
                 </p>
               </div>
             </div>
@@ -438,7 +438,7 @@ export default function ImageCompressorClient() {
             ))}
           </div>
           <div className="mt-6 rounded-xl border border-blue-500/20 bg-blue-500/5 p-4 text-xs text-blue-300/80">
-            🔒 <strong>100% private</strong> — all compression happens in your browser using Web APIs. Your images never leave your device or touch any server.
+            🔒 <strong>Your images are 100% safe</strong> — nothing is uploaded to any server. Everything happens right here on your device, completely private.
           </div>
         </div>
 
