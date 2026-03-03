@@ -77,7 +77,7 @@ export default function HomePage() {
                 Tools built to help, not to sell.
               </h2>
               <p className="text-muted text-lg max-w-xl mx-auto mb-8">
-                7 free apps. No accounts. No tracking. Just useful tools that
+                8 free apps. No accounts. No tracking. Just useful tools that
                 respect your time and your privacy.
               </p>
               <a

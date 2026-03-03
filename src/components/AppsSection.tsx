@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import {
-  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles,
+  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles, Coins,
 } from "lucide-react";
 import AppCard from "@/components/AppCard";
 
@@ -81,6 +81,17 @@ const apps = [
     icon: GitCompare,
     gradient: "from-violet-500 to-indigo-600",
     category: "Developer",
+    isNew: true,
+    isFeatured: false,
+  },
+  {
+    title: "Currency Converter",
+    description:
+      "Convert between 170+ currencies with live exchange rates. Supports all major world currencies — fast, free, and no sign-up required.",
+    href: "/apps/currency-converter",
+    icon: Coins,
+    gradient: "from-emerald-500 to-teal-600",
+    category: "Finance",
     isNew: true,
     isFeatured: false,
   },
