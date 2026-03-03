@@ -114,7 +114,7 @@ export default function TextDiffClient() {
   const isEmpty = !leftText && !rightText;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#09090b]">
+    <div className="flex flex-col min-h-screen bg-[#09090b] pt-16">
 
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
 
@@ -201,7 +201,7 @@ export default function TextDiffClient() {
       <div className="mx-auto w-full max-w-[1440px] flex-1 flex flex-col">
 
         {/* ── INPUT PANELS ──────────────────────────────── */}
-        <div className="grid grid-cols-2 border-b border-white/[0.07]">
+        <div className="grid grid-cols-2 divide-x divide-white/[0.07] border-b border-white/[0.07]">
           <InputPane
             label="Text A"
             sublabel="original / before"
@@ -212,7 +212,6 @@ export default function TextDiffClient() {
             copied={copied === "left"}
             placeholder="Paste your original / before text here…"
           />
-          <div className="border-l border-white/[0.07]" />
           <InputPane
             label="Text B"
             sublabel="modified / after"
