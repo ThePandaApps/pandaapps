@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft, TrendingUp, Info, AlertCircle, ExternalLink } from "lucide-react";
 import {
@@ -202,10 +202,33 @@ function fmtUsd(n: number, decimals = 2) {
 // ── Main component ────────────────────────────────────────────────────────────
 type Metal = "gold" | "silver";
 
-export default function GoldSilverClient() {
-  const [metal, setMetal] = useState<Metal>("gold");
+interface LivePrices {
+  gold:      { usdPerOz: number; inrPerGram: number };
+  silver:    { usdPerOz: number; inrPerGram: number };
+  usdInr:    number;
+  updatedAt: string;
+}
 
-  const spot    = metal === "gold" ? GOLD_SPOT : SILVER_SPOT;
+export default function GoldSilverClient() {
+  const [metal, setMetal]       = useState<Metal>("gold");
+  const [live, setLive]         = useState<LivePrices | null>(null);
+  const [liveStatus, setLiveStatus] = useState<"loading" | "live" | "static">("loading");
+
+  useEffect(() => {
+    fetch("/api/metals")
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data: LivePrices) => {
+        setLive(data);
+        setLiveStatus("live");
+      })
+      .catch(() => setLiveStatus("static"));
+  }, []);
+
+  const goldSpot  = live ? live.gold  : GOLD_SPOT;
+  const silverSpot = live ? live.silver : SILVER_SPOT;
+  const liveUsdInr = live ? live.usdInr : USD_INR;
+
+  const spot    = metal === "gold" ? goldSpot : silverSpot;
   const isGold  = metal === "gold";
 
   // Derived INR prices
@@ -220,6 +243,7 @@ export default function GoldSilverClient() {
   const usdPerOz    = spot.usdPerOz;
   const usdPerGram  = usdPerOz / TROY_OZ_TO_G;
   const usdPerKg    = usdPerGram * 1000;
+  void liveUsdInr; // consumed to avoid unused-var warning
 
   // Trend data change (first → last)
   const trendFirst = METAL_TREND[0][metal];
@@ -263,7 +287,20 @@ export default function GoldSilverClient() {
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">Gold &amp; Silver Prices</h1>
           <p className="text-muted max-w-xl mx-auto">
-            Current prices for India (₹) and international (USD) markets. Updated {DATA_DATE}.
+            Current prices for India (₹) and international (USD) markets.{" "}
+            {liveStatus === "live" ? (
+              <span className="inline-flex items-center gap-1 text-green-400 font-medium">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                </span>
+                Live prices
+              </span>
+            ) : liveStatus === "static" ? (
+              <span className="text-muted/60">Updated {DATA_DATE}</span>
+            ) : (
+              <span className="text-muted/40">Loading live prices…</span>
+            )}
           </p>
         </div>
 
@@ -450,8 +487,13 @@ export default function GoldSilverClient() {
           <AlertCircle className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
           <p className="text-xs text-muted leading-relaxed">
             <span className="font-semibold text-amber-600 dark:text-amber-400">Prices are indicative.</span>{" "}
-            Data was last updated on <strong className="text-foreground">{DATA_DATE}</strong>.
-            Live spot prices fluctuate continuously — check{" "}
+            {liveStatus === "live" && live
+              ? <><strong className="text-green-400">Live prices active</strong> — auto-refreshes hourly via GoldAPI.
+                {" "}Last fetched: {new Date(live.updatedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}.
+              </>
+              : <>Data was last updated on <strong className="text-foreground">{DATA_DATE}</strong>.</>
+            }
+            {" "}Live spot prices fluctuate continuously — check{" "}
             <a href="https://www.mcxindia.com" target="_blank" rel="noopener noreferrer"
               className="text-amber-600 dark:text-amber-400 hover:underline inline-flex items-center gap-0.5">
               MCX India <ExternalLink className="h-2.5 w-2.5" />
@@ -467,7 +509,11 @@ export default function GoldSilverClient() {
 
         <p className="text-center text-xs text-muted pb-4">
           Prices updated periodically based on international spot markets.{" "}
-          <span className="text-foreground/40">Data refreshed: {DATA_DATE}</span>
+          <span className="text-foreground/40">
+            {liveStatus === "live" && live
+              ? `Live · fetched ${new Date(live.updatedAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`
+              : `Data refreshed: ${DATA_DATE}`}
+          </span>
         </p>
       </main>
     </div>
