@@ -30,12 +30,12 @@ const apps = [
   {
     title: "Image Compressor",
     description:
-      "Compress images without losing quality. Supports JPEG, PNG, WebP with batch processing and smart optimization.",
+      "Compress JPEG, PNG, WebP & AVIF images with smart iterative algorithms. Batch processing, format conversion, zero server uploads.",
     href: "/apps/image-compressor",
     icon: Image,
     gradient: "from-blue-500 to-cyan-500",
     category: "Media",
-    isNew: false,
+    isNew: true,
     isFeatured: false,
   },
   {
