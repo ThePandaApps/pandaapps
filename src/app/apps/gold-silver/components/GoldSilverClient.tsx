@@ -24,6 +24,20 @@ const PH = VH - PAD.top  - PAD.bottom;
 
 function lerp(a: number, b: number, t: number) { return a + (b - a) * t; }
 
+type GRange = "1D" | "1W" | "1M" | "6M" | "1Y" | "2Y" | "5Y" | "10Y";
+const G_RANGE_POINTS: Record<GRange, number | null> = {
+  "1D": null, "1W": null, "1M": 2, "6M": 6, "1Y": 12, "2Y": 24, "5Y": 60, "10Y": 121,
+};
+const G_RANGES: GRange[] = ["1D","1W","1M","6M","1Y","2Y","5Y","10Y"];
+
+function gLabelStep(n: number) {
+  if (n <= 6)  return 1;
+  if (n <= 14) return 2;
+  if (n <= 30) return 3;
+  if (n <= 60) return 6;
+  return 12;
+}
+
 interface ChartProps {
   data:   TrendPoint[];
   field:  "gold" | "silver";
@@ -31,9 +45,12 @@ interface ChartProps {
   prefix: string;
 }
 
-function TrendChart({ data, field, color, prefix }: ChartProps) {
+function TrendChart({ data: allData, field, color, prefix }: ChartProps) {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
-  const xStep = PW / (data.length - 1);
+  const [range, setRange]       = useState<GRange>("1Y");
+  const pts  = G_RANGE_POINTS[range];
+  const data = pts !== null ? allData.slice(-pts) : allData;
+  const xStep = data.length > 1 ? PW / (data.length - 1) : PW;
 
   const vals   = data.map((d) => d[field]);
   const dMin   = Math.floor(Math.min(...vals) * 0.995);
@@ -60,7 +77,44 @@ function TrendChart({ data, field, color, prefix }: ChartProps) {
   const ttX = hoverIdx !== null ? xP(hoverIdx) : 0;
   const ttXF = ttX > VW / 2 ? ttX - TOOLTIP_W - 10 : ttX + 10;
 
+  // change % for the current slice
+  const sliceFirst = data[0];
+  const sliceLast  = data[data.length - 1];
+  const chgPct = sliceFirst && sliceLast
+    ? ((sliceLast[field] - sliceFirst[field]) / sliceFirst[field]) * 100 : 0;
+  const chgUp = chgPct >= 0;
+
   return (
+    <>
+      {/* Range filter row */}
+      <div className="flex items-center gap-1 flex-wrap mb-2">
+        {G_RANGES.map((r) => {
+          const disabled = G_RANGE_POINTS[r] === null;
+          const active   = range === r;
+          return (
+            <button key={r} disabled={disabled} onClick={() => setRange(r)}
+              title={disabled ? "Requires live intraday data" : undefined}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all
+                ${disabled
+                  ? "text-muted/30 cursor-not-allowed"
+                  : active
+                    ? `text-white shadow-sm`
+                    : "text-muted hover:text-foreground hover:bg-white/10"}`}
+              style={active && !disabled ? { backgroundColor: color } : undefined}>
+              {r}
+            </button>
+          );
+        })}
+        <span className={`ml-auto text-[11px] font-semibold ${chgUp ? "text-green-400" : "text-red-400"}`}>
+          {chgUp ? "+" : ""}{chgPct.toFixed(1)}%
+        </span>
+      </div>
+
+      {pts === null ? (
+        <div className="h-40 flex items-center justify-center text-sm text-muted/50">
+          Intraday / weekly data requires a live market API
+        </div>
+      ) : (
     <svg
       viewBox={`0 0 ${VW} ${VH}`}
       width="100%"
@@ -87,8 +141,8 @@ function TrendChart({ data, field, color, prefix }: ChartProps) {
         </g>
       ))}
 
-      {/* X labels — every other point */}
-      {data.map((d, i) => i % 2 === 0 && (
+      {/* X labels */}
+      {data.map((d, i) => i % gLabelStep(data.length) === 0 && (
         <text key={i} x={xP(i)} y={VH - PAD.bottom + 18} textAnchor="middle"
           fontSize="9" fill="rgba(128,128,128,0.7)" fontFamily="system-ui, sans-serif">
           {d.month}
@@ -132,6 +186,8 @@ function TrendChart({ data, field, color, prefix }: ChartProps) {
       <line x1={PAD.left} y1={PAD.top} x2={PAD.left} y2={PAD.top + PH}
         stroke="rgba(128,128,128,0.2)" strokeWidth="1" />
     </svg>
+      )}
+    </>
   );
 }
 

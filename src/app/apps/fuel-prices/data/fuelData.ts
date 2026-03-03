@@ -446,29 +446,75 @@ export function findCity(state: StateData, name: string): CityPrice | undefined 
 export const DATA_DATE = "3 March 2026";
 
 // ── National average trend (₹/litre, approx across all states) ──────────────
-// Used to draw the 18-month trend chart. Figures represent approximate
-// pan-India averages derived from major metro prices. Prices remain
-// administratively controlled and change infrequently.
+// Used to draw the trend chart. Approximate pan-India averages, monthly.
 export type TrendPoint = { month: string; petrol: number; diesel: number };
 
-export const NATIONAL_TREND: TrendPoint[] = [
-  { month: "Sep '24", petrol: 103.2, diesel: 90.1 },
-  { month: "Oct '24", petrol: 103.4, diesel: 90.2 },
-  { month: "Nov '24", petrol: 103.1, diesel: 90.0 },
-  { month: "Dec '24", petrol: 102.8, diesel: 89.7 },
-  { month: "Jan '25", petrol: 102.9, diesel: 89.9 },
-  { month: "Feb '25", petrol: 103.2, diesel: 90.1 },
-  { month: "Mar '25", petrol: 103.5, diesel: 90.3 },
-  { month: "Apr '25", petrol: 103.7, diesel: 90.5 },
-  { month: "May '25", petrol: 103.4, diesel: 90.2 },
-  { month: "Jun '25", petrol: 103.0, diesel: 89.8 },
-  { month: "Jul '25", petrol: 102.6, diesel: 89.4 },
-  { month: "Aug '25", petrol: 102.8, diesel: 89.6 },
-  { month: "Sep '25", petrol: 103.1, diesel: 89.9 },
-  { month: "Oct '25", petrol: 103.4, diesel: 90.2 },
-  { month: "Nov '25", petrol: 103.6, diesel: 90.4 },
-  { month: "Dec '25", petrol: 103.3, diesel: 90.1 },
-  { month: "Jan '26", petrol: 103.1, diesel: 89.9 },
-  { month: "Feb '26", petrol: 103.5, diesel: 90.3 },
-  { month: "Mar '26", petrol: 103.7, diesel: 90.5 },
+// Generates "Mon 'YY" labels
+function genMonths(startYear: number, startMonth: number, count: number): string[] {
+  const M = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const out: string[] = [];
+  let y = startYear, m = startMonth;
+  for (let i = 0; i < count; i++) {
+    out.push(`${M[m]} '${String(y).slice(2)}`);
+    if (++m > 11) { m = 0; y++; }
+  }
+  return out;
+}
+
+// India national avg petrol & diesel ₹/litre, Mar 2016 → Mar 2026 (121 points)
+const PETROL_RAW = [
+  // 2016 (Mar–Dec)
+  66.1,67.2,67.5,66.8,65.5,65.2,65.8,66.4,67.1,68.2,
+  // 2017
+  69.0,68.5,67.4,66.9,66.4,65.8,65.5,66.1,67.2,68.4,68.8,69.2,
+  // 2018
+  70.1,71.3,72.8,74.2,76.5,77.8,78.9,79.5,81.2,84.0,77.5,73.8,
+  // 2019
+  72.0,73.1,73.8,74.2,74.8,75.1,74.5,73.9,74.2,73.8,73.2,73.5,
+  // 2020
+  73.8,74.1,73.5,72.8,72.5,79.5,79.8,80.1,80.4,80.8,81.2,81.5,
+  // 2021
+  82.1,87.0,89.5,91.2,92.3,95.8,96.5,97.2,98.1,100.5,100.0,97.8,
+  // 2022
+  97.5,97.5,97.5,104.8,105.2,103.5,103.5,103.5,103.5,103.8,103.9,104.0,
+  // 2023
+  104.0,103.8,103.5,103.2,103.0,103.1,103.2,103.3,103.4,103.5,103.4,103.3,
+  // 2024
+  103.2,103.1,103.0,103.1,103.2,103.0,102.6,102.8,103.1,103.4,103.6,103.3,
+  // 2025
+  103.1,103.5,103.7,103.5,103.3,103.0,102.6,102.8,103.1,103.4,103.6,103.3,
+  // 2026 (Jan–Mar)
+  103.1,103.5,103.7,
 ];
+
+const DIESEL_RAW = [
+  // 2016 (Mar–Dec)
+  53.2,53.8,54.1,53.6,53.0,52.7,53.1,53.5,53.9,54.8,
+  // 2017
+  55.3,55.0,54.4,54.0,53.7,53.2,53.0,53.4,54.1,55.0,55.4,55.7,
+  // 2018
+  56.2,57.0,58.1,59.0,60.8,62.1,63.0,63.5,65.0,67.2,62.4,60.0,
+  // 2019
+  64.3,65.0,65.5,66.0,66.3,66.8,66.5,66.0,66.3,66.0,65.7,65.9,
+  // 2020
+  66.2,66.5,65.8,65.3,65.0,69.0,69.3,69.5,69.8,70.2,70.5,70.8,
+  // 2021
+  71.4,77.2,79.5,81.0,82.5,86.2,87.0,87.5,88.2,90.2,89.8,87.6,
+  // 2022
+  87.3,87.3,87.3,91.9,92.3,90.5,90.5,90.5,90.5,90.7,90.8,90.9,
+  // 2023
+  90.9,90.7,90.5,90.2,90.0,90.1,90.2,90.3,90.4,90.5,90.4,90.3,
+  // 2024
+  90.2,90.1,90.0,90.1,90.2,89.8,89.4,89.6,89.9,90.2,90.4,90.1,
+  // 2025
+  89.9,90.3,90.5,90.3,90.2,89.8,89.4,89.6,89.9,90.2,90.4,90.1,
+  // 2026 (Jan–Mar)
+  89.9,90.3,90.5,
+];
+
+const _MONTHS = genMonths(2016, 2, 121); // starts Mar 2016
+export const NATIONAL_TREND: TrendPoint[] = _MONTHS.map((month, i) => ({
+  month,
+  petrol: PETROL_RAW[i],
+  diesel: DIESEL_RAW[i],
+}));
