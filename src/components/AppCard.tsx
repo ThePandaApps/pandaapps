@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { ArrowUpRight, Star } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -23,8 +25,14 @@ export default function AppCard({
   isNew,
   isFeatured,
 }: AppCardProps) {
+  const slug = href.split("/").pop() ?? "";
+
+  const track = () => {
+    fetch(`/api/track?app=${slug}`, { method: "POST" }).catch(() => {});
+  };
+
   return (
-    <Link href={href} className="group block">
+    <Link href={href} onClick={track} className="group block">
       <div className="app-card relative rounded-2xl border border-border/60 bg-card/50 p-6 h-full overflow-hidden">
         {/* Gradient accent top border */}
         <div

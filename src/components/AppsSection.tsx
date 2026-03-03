@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
-  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles, Coins,
+  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles, Coins, TrendingUp,
 } from "lucide-react";
 import AppCard from "@/components/AppCard";
 
@@ -98,18 +98,38 @@ const apps = [
 ];
 
 export default function AppsSection() {
-  const [query, setQuery] = useState("");
+  const [query,  setQuery]  = useState("");
+  const [visits, setVisits] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    fetch("/api/track")
+      .then((r) => r.json())
+      .then(setVisits)
+      .catch(() => {});
+  }, []);
+
+  const sortedApps = useMemo(() => {
+    if (Object.keys(visits).length === 0) return apps;
+    return [...apps].sort((a, b) => {
+      const slugA = a.href.split("/").pop() ?? "";
+      const slugB = b.href.split("/").pop() ?? "";
+      return (visits[slugB] ?? 0) - (visits[slugA] ?? 0);
+    });
+  }, [visits]);
+
+  const sortedByPopularity = Object.values(visits).some((v) => v > 0);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return apps;
-    return apps.filter(
+    const base = sortedApps;
+    if (!q) return base;
+    return base.filter(
       (app) =>
         app.title.toLowerCase().includes(q) ||
         app.description.toLowerCase().includes(q) ||
         app.category.toLowerCase().includes(q)
     );
-  }, [query]);
+  }, [query, sortedApps]);
 
   return (
     <section id="apps" className="py-24 px-4 sm:px-6 lg:px-8">
@@ -127,6 +147,11 @@ export default function AppsSection() {
             Each app is carefully crafted to be fast, beautiful, and useful.
             More apps are added regularly.
           </p>
+          {sortedByPopularity && !query && (
+            <p className="text-xs text-muted/60 mt-3 flex items-center justify-center gap-1.5">
+              <TrendingUp className="h-3 w-3" /> Sorted by most visited
+            </p>
+          )}
         </div>
 
         {/* Search bar */}
