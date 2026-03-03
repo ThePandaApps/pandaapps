@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import {
-  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles, Coins, TrendingUp, Fuel, Bot,
+  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles, Coins, TrendingUp, Fuel, Bot, Braces,
 } from "lucide-react";
 import AppCard from "@/components/AppCard";
 
@@ -109,13 +109,24 @@ const apps = [
   {
     title: "AI Model Benchmarks",
     description:
-      "Compare 15+ frontier AI models across 18 benchmarks — reasoning, coding, math, knowledge, multimodal & instruction following. Scores from official papers & leaderboards.",
+      "Compare 20+ frontier AI models across 5 benchmarks — GPQA, SWE-bench, ARC-AGI 2, Arena ELO, AA Index. Live daily updates with auto-discovery of new models.",
     href: "/apps/ai-benchmarks",
     icon: Bot,
     gradient: "from-violet-500 to-indigo-600",
     category: "AI",
     isNew: true,
     isFeatured: true,
+  },
+  {
+    title: "Regex Tester",
+    description:
+      "Test and debug regular expressions in real-time. Live match highlighting, capture groups, replace mode, flag toggles, and a built-in pattern library. Runs entirely in your browser.",
+    href: "/apps/regex-tester",
+    icon: Braces,
+    gradient: "from-violet-500 to-purple-600",
+    category: "Developer",
+    isNew: true,
+    isFeatured: false,
   },
 ];
 
