@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "AI Model Benchmarks — Panda Apps",
   description:
-    "Compare the latest AI models across 18 benchmarks — reasoning, math, coding, knowledge, multimodal, and instruction following. Scores from official technical reports and peer-reviewed leaderboards.",
+    "Compare 20 frontier AI models across 5 key benchmarks with interactive charts — GPQA Diamond, SWE-bench, ARC-AGI 2, Arena ELO, and AA Intelligence Index. Auto-updated daily.",
 };
 
 export default function AIBenchmarksLayout({ children }: { children: React.ReactNode }) {
