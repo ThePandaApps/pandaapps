@@ -192,40 +192,15 @@ export default function ResumeBuilderClient() {
           {/* Template picker toggle */}
           <button onClick={() => setShowTemplates(!showTemplates)}
             className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition shrink-0">
-            <LayoutTemplate className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Template</span>
+            <LayoutTemplate className="h-3.5 w-3.5" /> Template
           </button>
 
           {/* Download button */}
           <div className="relative shrink-0">
             <button onClick={() => setShowDownload(!showDownload)}
               className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">
-              <Download className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Download</span>
+              <Download className="h-3.5 w-3.5" /> Download
             </button>
-            {showDownload && (
-              <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl border border-gray-200 shadow-xl p-2 z-50">
-                <button onClick={() => { printPDF(); setShowDownload(false); }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-lg transition">
-                  <FileText className="h-4 w-4 text-red-500" />
-                  <div className="text-left"><div className="font-medium">PDF (Print)</div><div className="text-[10px] text-gray-400">Best quality, uses browser print</div></div>
-                </button>
-                <button onClick={() => { downloadPDF(); setShowDownload(false); }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-lg transition">
-                  <FileText className="h-4 w-4 text-blue-500" />
-                  <div className="text-left"><div className="font-medium">PDF (Image)</div><div className="text-[10px] text-gray-400">Direct download as image PDF</div></div>
-                </button>
-                <button onClick={() => { downloadDocx(); setShowDownload(false); }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 rounded-lg transition">
-                  <FileType className="h-4 w-4 text-indigo-500" />
-                  <div className="text-left"><div className="font-medium">Word (.docx)</div><div className="text-[10px] text-gray-400">Editable in MS Word / Google Docs</div></div>
-                </button>
-                <hr className="my-1 border-gray-100" />
-                <button onClick={() => { exportJSON(); setShowDownload(false); }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-green-50 rounded-lg transition">
-                  <FileJson className="h-4 w-4 text-green-500" />
-                  <div className="text-left"><div className="font-medium">JSON (Editable)</div><div className="text-[10px] text-gray-400">Import later to continue editing</div></div>
-                </button>
-              </div>
-            )}
           </div>
 
           {/* More actions */}
@@ -326,10 +301,10 @@ export default function ResumeBuilderClient() {
         <div className={`flex-1 min-w-0 overflow-y-auto pb-6 ${view === "edit" ? "hidden lg:block" : ""}`}>
           <div className="lg:sticky lg:top-4">
             <div className="rounded-xl border border-gray-200 bg-white shadow-lg overflow-hidden">
-              {/* A4 aspect ratio container */}
+              {/* A4 preview container */}
               <div ref={previewRef}
                 className="w-full"
-                style={{ aspectRatio: "210 / 297", overflow: "hidden" }}>
+                style={{ minHeight: "auto", overflow: "visible" }}>
                 <ResumePreview data={data} />
               </div>
             </div>
@@ -340,9 +315,40 @@ export default function ResumeBuilderClient() {
         </div>
       </div>
 
-      {/* Close dropdowns on click outside */}
-      {(showDownload || showTemplates) && (
-        <div className="fixed inset-0 z-40" onClick={() => { setShowDownload(false); setShowTemplates(false); }} />
+      {/* Download dropdown overlay - rendered outside nav to avoid clipping */}
+      {showDownload && (
+        <>
+          <div className="fixed inset-0 z-[60]" onClick={() => setShowDownload(false)} />
+          <div className="fixed top-16 right-4 sm:right-auto sm:absolute z-[70] w-56 bg-white rounded-xl border border-gray-200 shadow-xl p-2"
+            style={{ right: "1rem" }}>
+            <button onClick={() => { printPDF(); setShowDownload(false); }}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-lg transition">
+              <FileText className="h-4 w-4 text-red-500" />
+              <div className="text-left"><div className="font-medium">PDF (Print)</div><div className="text-[10px] text-gray-400">Best quality, uses browser print</div></div>
+            </button>
+            <button onClick={() => { downloadPDF(); setShowDownload(false); }}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-lg transition">
+              <FileText className="h-4 w-4 text-blue-500" />
+              <div className="text-left"><div className="font-medium">PDF (Image)</div><div className="text-[10px] text-gray-400">Direct download as image PDF</div></div>
+            </button>
+            <button onClick={() => { downloadDocx(); setShowDownload(false); }}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 rounded-lg transition">
+              <FileType className="h-4 w-4 text-indigo-500" />
+              <div className="text-left"><div className="font-medium">Word (.docx)</div><div className="text-[10px] text-gray-400">Editable in MS Word / Google Docs</div></div>
+            </button>
+            <hr className="my-1 border-gray-100" />
+            <button onClick={() => { exportJSON(); setShowDownload(false); }}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-green-50 rounded-lg transition">
+              <FileJson className="h-4 w-4 text-green-500" />
+              <div className="text-left"><div className="font-medium">JSON (Editable)</div><div className="text-[10px] text-gray-400">Import later to continue editing</div></div>
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* Close template picker on click outside */}
+      {showTemplates && (
+        <div className="fixed inset-0 z-40" onClick={() => setShowTemplates(false)} />
       )}
     </div>
   );
