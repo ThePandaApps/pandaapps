@@ -4,7 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import {
   ChevronLeft, Download, FileJson, FileText, Eye, Edit3, Palette, LayoutTemplate,
-  Sparkles, Trash2, Upload, RotateCcw, Check,
+  Sparkles, Trash2, Upload, RotateCcw, Check, FileType,
 } from "lucide-react";
 import ResumeEditor from "./ResumeEditor";
 import { ResumePreview } from "./ResumeTemplates";
@@ -148,6 +148,14 @@ export default function ResumeBuilderClient() {
     setTimeout(() => { win.print(); win.close(); }, 500);
   }, [data.personal.fullName]);
 
+  // Download editable Word (.docx)
+  const downloadDocx = useCallback(async () => {
+    const { generateDocx } = await import("./exportDocx");
+    const blob = await generateDocx(data);
+    const { saveAs } = await import("file-saver");
+    saveAs(blob, `${data.personal.fullName || "resume"}.docx`);
+  }, [data]);
+
   /* ── Rendering ──────────────────────────────────────────────────────── */
   const isMobile = typeof window !== "undefined" && window.innerWidth < 1024;
 
@@ -204,6 +212,11 @@ export default function ResumeBuilderClient() {
                   className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-blue-50 rounded-lg transition">
                   <FileText className="h-4 w-4 text-blue-500" />
                   <div className="text-left"><div className="font-medium">PDF (Image)</div><div className="text-[10px] text-gray-400">Direct download as image PDF</div></div>
+                </button>
+                <button onClick={() => { downloadDocx(); setShowDownload(false); }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-gray-700 hover:bg-indigo-50 rounded-lg transition">
+                  <FileType className="h-4 w-4 text-indigo-500" />
+                  <div className="text-left"><div className="font-medium">Word (.docx)</div><div className="text-[10px] text-gray-400">Editable in MS Word / Google Docs</div></div>
                 </button>
                 <hr className="my-1 border-gray-100" />
                 <button onClick={() => { exportJSON(); setShowDownload(false); }}
