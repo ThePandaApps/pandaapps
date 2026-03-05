@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import {
-  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles, Coins, TrendingUp, Fuel, Bot, Braces, FileJson, Gem,
+  QrCode, Image, FileText, Palette, Lock, Calculator, GitCompare, Search, X, Sparkles, Coins, TrendingUp, Fuel, Bot, Braces, FileJson, Gem, FileUser,
 } from "lucide-react";
 import AppCard from "@/components/AppCard";
 
@@ -149,6 +149,17 @@ const apps = [
     category: "Finance",
     isNew: true,
     isFeatured: false,
+  },
+  {
+    title: "Resume Builder",
+    description:
+      "Build a professional resume in minutes. 4 modern templates, real-time preview, PDF & JSON export. 100% free, no sign-up, fully in-browser.",
+    href: "/apps/resume-builder",
+    icon: FileUser,
+    gradient: "from-blue-500 to-indigo-600",
+    category: "Productivity",
+    isNew: true,
+    isFeatured: true,
   },
 ];
 
