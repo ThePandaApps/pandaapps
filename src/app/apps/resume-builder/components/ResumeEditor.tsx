@@ -515,6 +515,62 @@ export default function ResumeEditor({ data, onChange }: Props) {
           </button>
         )}
       </div>
+
+      {/* ─ Custom Sections ─ */}
+      {data.customSections.map((cs, sIdx) => (
+        <div key={cs.id} className="rounded-xl border border-dashed border-blue-200 bg-white p-4 space-y-3 shadow-sm">
+          <div className="flex items-center gap-2">
+            <LayoutList className="h-4 w-4 text-blue-500 flex-shrink-0" />
+            <input
+              value={cs.title}
+              onChange={(e) => setCustomSection(sIdx, { ...cs, title: e.target.value })}
+              placeholder="Section Title"
+              className="text-sm font-semibold text-gray-800 bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-400 focus:outline-none flex-1 min-w-0 transition"
+            />
+            <button onClick={() => toggle(`custom-${cs.id}`)} title="Collapse"
+              className="p-1 rounded hover:bg-gray-100 text-gray-400 transition">
+              {open(`custom-${cs.id}`) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </button>
+            <button onClick={() => removeCustomSection(sIdx)} title="Delete section"
+              className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          {open(`custom-${cs.id}`) && (
+            <div className="space-y-2">
+              {cs.items.map((item, iIdx) => (
+                <div key={item.id} className="flex gap-2 items-start">
+                  <textarea
+                    value={item.text}
+                    onChange={(e) => {
+                      const newItems = [...cs.items];
+                      newItems[iIdx] = { ...item, text: e.target.value };
+                      setCustomSection(sIdx, { ...cs, items: newItems });
+                    }}
+                    placeholder="Enter text…"
+                    rows={2}
+                    className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition resize-none"
+                  />
+                  <button onClick={() => removeCustomItem(sIdx, iIdx)}
+                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition mt-1">
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              ))}
+              <button onClick={() => addCustomItem(sIdx)}
+                className="w-full rounded-lg border-2 border-dashed border-blue-100 py-2.5 text-sm text-blue-400 hover:border-blue-300 hover:text-blue-600 transition">
+                + Add Item
+              </button>
+            </div>
+          )}
+        </div>
+      ))}
+
+      {/* ─ Add Custom Section button ─ */}
+      <button onClick={addCustomSection}
+        className="w-full rounded-xl border-2 border-dashed border-gray-200 py-4 text-sm text-gray-400 hover:border-blue-300 hover:text-blue-500 hover:bg-blue-50/30 transition flex items-center justify-center gap-2">
+        <Plus className="h-4 w-4" /> Add Custom Section
+      </button>
     </div>
   );
 }
