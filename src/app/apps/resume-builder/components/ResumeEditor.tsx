@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {
   User, Briefcase, GraduationCap, Wrench, FolderOpen, Award, Globe,
-  Trophy, Plus, Trash2, ChevronDown, ChevronUp, GripVertical,
+  Trophy, Plus, Trash2, ChevronDown, ChevronUp, GripVertical, Eye, EyeOff,
 } from "lucide-react";
 import type {
   ResumeData, Experience, Education, Skill, Project,
@@ -221,10 +221,13 @@ export default function ResumeEditor({ data, onChange }: Props) {
           <div className="flex-1">
             <SectionHeader icon={Briefcase} title="Work Experience" open={open("experience")} toggle={() => toggle("experience")} onAdd={addExperience} />
           </div>
-          <label className="flex items-center gap-1.5 text-xs text-gray-500">
-            <input type="checkbox" checked={data.sections.experience} onChange={() => toggleSection("experience")} className="accent-blue-500 rounded" />
-            Show
-          </label>
+          <button onClick={() => toggleSection("experience")} title={data.sections.experience ? "Hide section" : "Show section"}
+            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition font-medium ${
+              data.sections.experience ? "text-blue-600 bg-blue-50 hover:bg-blue-100" : "text-gray-400 bg-gray-100 hover:bg-gray-200"
+            }`}>
+            {data.sections.experience ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+            {data.sections.experience ? "Visible" : "Hidden"}
+          </button>
         </div>
         {open("experience") && data.experience.map((exp, i) => (
           <ItemCard key={exp.id} onDelete={() => removeExperience(i)}>
@@ -281,10 +284,13 @@ export default function ResumeEditor({ data, onChange }: Props) {
           <div className="flex-1">
             <SectionHeader icon={GraduationCap} title="Education" open={open("education")} toggle={() => toggle("education")} onAdd={addEducation} />
           </div>
-          <label className="flex items-center gap-1.5 text-xs text-gray-500">
-            <input type="checkbox" checked={data.sections.education} onChange={() => toggleSection("education")} className="accent-blue-500 rounded" />
-            Show
-          </label>
+          <button onClick={() => toggleSection("education")} title={data.sections.education ? "Hide section" : "Show section"}
+            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition font-medium ${
+              data.sections.education ? "text-blue-600 bg-blue-50 hover:bg-blue-100" : "text-gray-400 bg-gray-100 hover:bg-gray-200"
+            }`}>
+            {data.sections.education ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+            {data.sections.education ? "Visible" : "Hidden"}
+          </button>
         </div>
         {open("education") && data.education.map((edu, i) => (
           <ItemCard key={edu.id} onDelete={() => removeEducation(i)}>
@@ -316,10 +322,13 @@ export default function ResumeEditor({ data, onChange }: Props) {
           <div className="flex-1">
             <SectionHeader icon={Wrench} title="Skills" open={open("skills")} toggle={() => toggle("skills")} onAdd={addSkill} />
           </div>
-          <label className="flex items-center gap-1.5 text-xs text-gray-500">
-            <input type="checkbox" checked={data.sections.skills} onChange={() => toggleSection("skills")} className="accent-blue-500 rounded" />
-            Show
-          </label>
+          <button onClick={() => toggleSection("skills")} title={data.sections.skills ? "Hide section" : "Show section"}
+            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition font-medium ${
+              data.sections.skills ? "text-blue-600 bg-blue-50 hover:bg-blue-100" : "text-gray-400 bg-gray-100 hover:bg-gray-200"
+            }`}>
+            {data.sections.skills ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+            {data.sections.skills ? "Visible" : "Hidden"}
+          </button>
         </div>
         {open("skills") && data.skills.map((sk, i) => (
           <ItemCard key={sk.id} onDelete={() => removeSkill(i)}>
@@ -347,10 +356,13 @@ export default function ResumeEditor({ data, onChange }: Props) {
           <div className="flex-1">
             <SectionHeader icon={FolderOpen} title="Projects" open={open("projects")} toggle={() => toggle("projects")} onAdd={addProject} />
           </div>
-          <label className="flex items-center gap-1.5 text-xs text-gray-500">
-            <input type="checkbox" checked={data.sections.projects} onChange={() => toggleSection("projects")} className="accent-blue-500 rounded" />
-            Show
-          </label>
+          <button onClick={() => toggleSection("projects")} title={data.sections.projects ? "Hide section" : "Show section"}
+            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition font-medium ${
+              data.sections.projects ? "text-blue-600 bg-blue-50 hover:bg-blue-100" : "text-gray-400 bg-gray-100 hover:bg-gray-200"
+            }`}>
+            {data.sections.projects ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+            {data.sections.projects ? "Visible" : "Hidden"}
+          </button>
         </div>
         {open("projects") && data.projects.map((proj, i) => (
           <ItemCard key={proj.id} onDelete={() => removeProject(i)}>
@@ -386,10 +398,13 @@ export default function ResumeEditor({ data, onChange }: Props) {
           <div className="flex-1">
             <SectionHeader icon={Award} title="Certifications" open={open("certifications")} toggle={() => toggle("certifications")} onAdd={addCert} />
           </div>
-          <label className="flex items-center gap-1.5 text-xs text-gray-500">
-            <input type="checkbox" checked={data.sections.certifications} onChange={() => toggleSection("certifications")} className="accent-blue-500 rounded" />
-            Show
-          </label>
+          <button onClick={() => toggleSection("certifications")} title={data.sections.certifications ? "Hide section" : "Show section"}
+            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition font-medium ${
+              data.sections.certifications ? "text-blue-600 bg-blue-50 hover:bg-blue-100" : "text-gray-400 bg-gray-100 hover:bg-gray-200"
+            }`}>
+            {data.sections.certifications ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+            {data.sections.certifications ? "Visible" : "Hidden"}
+          </button>
         </div>
         {open("certifications") && data.certifications.map((c, i) => (
           <ItemCard key={c.id} onDelete={() => removeCert(i)}>
@@ -416,10 +431,13 @@ export default function ResumeEditor({ data, onChange }: Props) {
           <div className="flex-1">
             <SectionHeader icon={Globe} title="Languages" open={open("languages")} toggle={() => toggle("languages")} onAdd={addLang} />
           </div>
-          <label className="flex items-center gap-1.5 text-xs text-gray-500">
-            <input type="checkbox" checked={data.sections.languages} onChange={() => toggleSection("languages")} className="accent-blue-500 rounded" />
-            Show
-          </label>
+          <button onClick={() => toggleSection("languages")} title={data.sections.languages ? "Hide section" : "Show section"}
+            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition font-medium ${
+              data.sections.languages ? "text-blue-600 bg-blue-50 hover:bg-blue-100" : "text-gray-400 bg-gray-100 hover:bg-gray-200"
+            }`}>
+            {data.sections.languages ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+            {data.sections.languages ? "Visible" : "Hidden"}
+          </button>
         </div>
         {open("languages") && data.languages.map((l, i) => (
           <ItemCard key={l.id} onDelete={() => removeLang(i)}>
@@ -450,10 +468,13 @@ export default function ResumeEditor({ data, onChange }: Props) {
           <div className="flex-1">
             <SectionHeader icon={Trophy} title="Awards & Achievements" open={open("awards")} toggle={() => toggle("awards")} onAdd={addAward} />
           </div>
-          <label className="flex items-center gap-1.5 text-xs text-gray-500">
-            <input type="checkbox" checked={data.sections.awards} onChange={() => toggleSection("awards")} className="accent-blue-500 rounded" />
-            Show
-          </label>
+          <button onClick={() => toggleSection("awards")} title={data.sections.awards ? "Hide section" : "Show section"}
+            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg transition font-medium ${
+              data.sections.awards ? "text-blue-600 bg-blue-50 hover:bg-blue-100" : "text-gray-400 bg-gray-100 hover:bg-gray-200"
+            }`}>
+            {data.sections.awards ? <Eye className="h-3.5 w-3.5" /> : <EyeOff className="h-3.5 w-3.5" />}
+            {data.sections.awards ? "Visible" : "Hidden"}
+          </button>
         </div>
         {open("awards") && data.awards.map((a, i) => (
           <ItemCard key={a.id} onDelete={() => removeAward(i)}>
