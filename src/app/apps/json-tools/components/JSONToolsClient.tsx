@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from "react";
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   ChevronLeft, Copy, Check, AlertCircle, ChevronRight,
   ChevronDown, MousePointerClick, FlaskConical, AlignLeft,
@@ -526,9 +527,11 @@ export default function JSONToolsClient() {
           </Link>
           <span className="text-border/60">&middot;</span>
           <span className="flex items-center gap-1.5 text-sm font-medium">
-            <span className="text-amber-400 font-mono font-bold text-base">{"{}"}</span>
+            <span className="text-amber-400 font-mono font-bold text-base">{"{}"}  </span>
             JSON Tools
           </span>
+          <div className="ml-auto" />
+          <ThemeToggle />
         </div>
       </nav>
 

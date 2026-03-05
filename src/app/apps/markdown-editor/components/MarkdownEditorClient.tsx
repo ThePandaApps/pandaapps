@@ -5,6 +5,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import Toolbar, { type ViewMode, type ToolbarAction } from "./Toolbar";
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   Copy, Download, FileDown, Printer, Plus, Check,
   FileText, Clock, AlignLeft, HelpCircle, X, ChevronLeft,
@@ -279,6 +280,8 @@ export default function MarkdownEditorClient() {
             <HelpCircle className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Help</span>
           </HeaderBtn>
+          <div className="w-px h-4 bg-border/40 mx-0.5" />
+          <ThemeToggle />
         </div>
       </div>
 

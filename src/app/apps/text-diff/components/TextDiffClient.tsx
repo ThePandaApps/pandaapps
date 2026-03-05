@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   Copy, Check, Download, GitCompare,
   Trash2, Eye, Columns2, List,
@@ -199,6 +200,8 @@ export default function TextDiffClient() {
               <Download className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">.patch</span>
             </TBtn>
+            <div className="w-px h-4 bg-white/10 mx-0.5" />
+            <ThemeToggle />
           </div>
         </div>
       </div>

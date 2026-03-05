@@ -9,6 +9,7 @@ import { extractColorsFromImageData, generateHarmony } from "../palette";
 import ColorCard from "./ColorCard";
 import UploadZone from "./UploadZone";
 import ExportPanel from "./ExportPanel";
+import ThemeToggle from "@/components/ThemeToggle";
 
 /* ── Types ─────────────────────────────────────────────────────── */
 interface ActivePalette {
@@ -107,6 +108,8 @@ export default function ColorPaletteClient() {
             </div>
             <span className="font-semibold text-sm">Color Palette</span>
           </div>
+          <div className="ml-auto" />
+          <ThemeToggle />
         </div>
       </nav>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">

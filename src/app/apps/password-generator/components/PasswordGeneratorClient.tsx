@@ -6,6 +6,7 @@ import {
   Eye, EyeOff, Plus, Trash2, ShieldAlert, ChevronLeft,
 } from "lucide-react";
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 
 /* ══════════════════════════════════════════════════════════════════
    TYPES & CONSTANTS
@@ -232,6 +233,8 @@ export default function PasswordGeneratorClient() {
             </div>
             <span className="font-semibold text-sm">Password Generator</span>
           </div>
+          <div className="ml-auto" />
+          <ThemeToggle />
         </div>
       </nav>
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">

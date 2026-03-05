@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X, Sparkles } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -65,16 +66,21 @@ export default function Navbar() {
               <Sparkles className="h-3.5 w-3.5" />
               Explore Apps
             </Link>
+            <div className="ml-2 h-5 w-px bg-border" />
+            <ThemeToggle className="ml-2" />
           </div>
 
           {/* Mobile menu button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-muted hover:text-foreground transition-colors rounded-lg hover:bg-white/5"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 text-muted hover:text-foreground transition-colors rounded-lg hover:bg-white/5"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
       </div>
 

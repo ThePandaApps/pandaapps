@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { ArrowLeftRight, RefreshCw, TrendingUp, Coins, AlertCircle, Clock, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 
 /* ── Currency metadata ─────────────────────────────────────────── */
 const CURRENCIES: Record<string, { name: string; flag: string }> = {
@@ -173,6 +174,8 @@ export default function CurrencyConverterClient() {
             </div>
             <span className="font-semibold text-sm">Currency Converter</span>
           </div>
+          <div className="ml-auto" />
+          <ThemeToggle />
         </div>
       </nav>
       <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8 py-8 space-y-6">

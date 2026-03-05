@@ -14,6 +14,7 @@ import {
   goldInr22k,
   type TrendPoint,
 } from "../data/metalData";
+import ThemeToggle from "@/components/ThemeToggle";
 
 // ── Chart constants ───────────────────────────────────────────────────────────
 const PAD = { left: 58, right: 16, top: 20, bottom: 50 };
@@ -275,6 +276,8 @@ export default function GoldSilverClient() {
             </div>
             <span className="font-semibold text-sm">Gold &amp; Silver Prices</span>
           </div>
+          <div className="ml-auto" />
+          <ThemeToggle />
         </div>
       </nav>
 

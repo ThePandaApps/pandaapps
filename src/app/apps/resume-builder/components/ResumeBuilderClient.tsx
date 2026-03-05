@@ -10,6 +10,7 @@ import ResumeEditor from "./ResumeEditor";
 import { ResumePreview } from "./ResumeTemplates";
 import type { ResumeData, TemplateName } from "../data/types";
 import { EMPTY_RESUME, SAMPLE_RESUME } from "../data/types";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const ACCENT_COLORS = [
   "#2563eb", "#0891b2", "#059669", "#7c3aed", "#dc2626",
@@ -130,13 +131,13 @@ export default function ResumeBuilderClient() {
   return (
     <div className="h-screen flex flex-col bg-gray-50 text-gray-900 overflow-hidden">
       {/* ─ Top Nav ─ */}
-      <nav className="flex-shrink-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
+      <nav className="flex-shrink-0 z-50 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-gray-200 dark:border-zinc-700">
         <div className="max-w-[1600px] mx-auto px-4 h-14 flex items-center gap-2 sm:gap-3 overflow-x-auto scrollbar-hide">
-          <Link href="/" className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 transition shrink-0">
+          <Link href="/" className="flex items-center gap-1 text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition shrink-0">
             <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Home</span>
           </Link>
-          <div className="h-5 w-px bg-gray-200 shrink-0" />
-          <h1 className="text-sm font-semibold text-gray-900 shrink-0 hidden sm:block">Resume Builder</h1>
+          <div className="h-5 w-px bg-gray-200 dark:bg-zinc-700 shrink-0" />
+          <h1 className="text-sm font-semibold text-gray-900 dark:text-white shrink-0 hidden sm:block">Resume Builder</h1>
 
           {/* Auto-save indicator */}
           <span className={`shrink-0 flex items-center gap-1 text-[10px] ${saving ? "text-green-500" : "text-gray-400"} transition`}>
@@ -146,20 +147,20 @@ export default function ResumeBuilderClient() {
           <div className="flex-1 min-w-2" />
 
           {/* Mobile view toggle */}
-          <div className="flex lg:hidden items-center border border-gray-200 rounded-lg overflow-hidden shrink-0">
+          <div className="flex lg:hidden items-center border border-gray-200 dark:border-zinc-600 rounded-lg overflow-hidden shrink-0">
             <button onClick={() => setView("edit")}
-              className={`px-2.5 py-1.5 text-xs font-medium transition ${view === "edit" ? "bg-blue-50 text-blue-600" : "text-gray-500 hover:bg-gray-50"}`}>
+              className={`px-2.5 py-1.5 text-xs font-medium transition ${view === "edit" ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600" : "text-gray-500 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800"}`}>
               <Edit3 className="h-3.5 w-3.5 inline mr-0.5" />Edit
             </button>
             <button onClick={() => setView("preview")}
-              className={`px-2.5 py-1.5 text-xs font-medium transition ${view === "preview" ? "bg-blue-50 text-blue-600" : "text-gray-500 hover:bg-gray-50"}`}>
+              className={`px-2.5 py-1.5 text-xs font-medium transition ${view === "preview" ? "bg-blue-50 dark:bg-blue-900/30 text-blue-600" : "text-gray-500 dark:text-zinc-400 hover:bg-gray-50 dark:hover:bg-zinc-800"}`}>
               <Eye className="h-3.5 w-3.5 inline mr-0.5" />Preview
             </button>
           </div>
 
           {/* Template picker toggle */}
           <button onClick={() => setShowTemplates(!showTemplates)}
-            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition shrink-0">
+            className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium border border-gray-200 dark:border-zinc-600 rounded-lg text-gray-600 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition shrink-0">
             <LayoutTemplate className="h-3.5 w-3.5" /> Template
           </button>
 
@@ -174,32 +175,33 @@ export default function ResumeBuilderClient() {
           {/* More actions */}
           <div className="hidden sm:flex items-center gap-1 ml-1">
             <button onClick={importJSON} title="Import JSON"
-              className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition">
+              className="p-1.5 text-gray-400 dark:text-zinc-500 hover:text-gray-600 dark:hover:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg transition">
               <Upload className="h-4 w-4" />
             </button>
             <button onClick={loadSample} title="Load sample resume"
-              className="p-1.5 text-gray-400 hover:text-amber-500 hover:bg-amber-50 rounded-lg transition">
+              className="p-1.5 text-gray-400 dark:text-zinc-500 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition">
               <Sparkles className="h-4 w-4" />
             </button>
             <button onClick={clearAll} title="Clear all"
-              className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+              className="p-1.5 text-gray-400 dark:text-zinc-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition">
               <Trash2 className="h-4 w-4" />
             </button>
           </div>
+          <ThemeToggle />
         </div>
 
         {/* Template picker bar */}
         {showTemplates && (
-          <div className="border-t border-gray-100 bg-white px-4 py-3">
+          <div className="border-t border-gray-100 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-4 py-3">
             <div className="max-w-[1600px] mx-auto">
               <div className="flex items-center gap-4 mb-2">
-                <span className="text-xs font-semibold text-gray-800">Choose Template</span>
+                <span className="text-xs font-semibold text-gray-800 dark:text-zinc-200">Choose Template</span>
                 <div className="flex-1"/>
-                <span className="text-xs font-semibold text-gray-800 mr-1">Accent Color</span>
+                <span className="text-xs font-semibold text-gray-800 dark:text-zinc-200 mr-1">Accent Color</span>
                 <div className="flex gap-1.5">
                   {ACCENT_COLORS.map((c) => (
                     <button key={c} onClick={() => setData({ ...data, accentColor: c })}
-                      className={`w-5 h-5 rounded-full border-2 transition ${data.accentColor === c ? "border-gray-800 scale-110" : "border-transparent hover:scale-110"}`}
+                      className={`w-5 h-5 rounded-full border-2 transition ${data.accentColor === c ? "border-gray-800 dark:border-white scale-110" : "border-transparent hover:scale-110"}`}
                       style={{ backgroundColor: c }} title={c} />
                   ))}
                 </div>
@@ -209,11 +211,11 @@ export default function ResumeBuilderClient() {
                   <button key={t.id} onClick={() => setData({ ...data, template: t.id })}
                     className={`rounded-xl border-2 p-3 text-left transition hover:shadow-md ${
                       data.template === t.id
-                        ? "border-blue-500 bg-blue-50 shadow-sm"
-                        : "border-gray-200 hover:border-gray-300"
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 shadow-sm"
+                        : "border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-500"
                     }`}>
-                    <div className="text-xs font-semibold text-gray-800">{t.label}</div>
-                    <div className="text-[10px] text-gray-500 mt-0.5">{t.desc}</div>
+                    <div className="text-xs font-semibold text-gray-800 dark:text-zinc-200">{t.label}</div>
+                    <div className="text-[10px] text-gray-500 dark:text-zinc-400 mt-0.5">{t.desc}</div>
                   </button>
                 ))}
               </div>

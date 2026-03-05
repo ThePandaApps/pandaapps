@@ -3,6 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { ArrowLeftRight, Calculator, Search, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 import { CATEGORIES, convert, formatResult, getUnit } from "../types";
 import type { Category, Unit } from "../types";
 
@@ -106,6 +107,8 @@ export default function UnitConverterClient() {
             </div>
             <span className="font-semibold text-sm">Unit Converter</span>
           </div>
+          <div className="ml-auto" />
+          <ThemeToggle />
         </div>
       </nav>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">

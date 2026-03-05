@@ -7,6 +7,7 @@ import {
   ChevronDown, ChevronUp, BookOpen, Shield, Replace,
 } from "lucide-react";
 import HelpTip from "@/components/HelpTip";
+import ThemeToggle from "@/components/ThemeToggle";
 
 /* ── Constants ── */
 const QUICK_PATTERNS = [
@@ -242,6 +243,7 @@ export default function RegexTesterClient() {
             <Shield className="h-3 w-3" />
             <span className="hidden sm:inline">Runs entirely in your browser</span>
           </div>
+          <ThemeToggle />
         </div>
       </nav>
 

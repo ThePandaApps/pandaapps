@@ -21,6 +21,7 @@ import {
   type ModelTag,
   DATA_DATE,
 } from "../data/frontierData";
+import ThemeToggle from "@/components/ThemeToggle";
 
 /* ═══════════════ Constants ═══════════════ */
 
@@ -491,6 +492,7 @@ export default function AIBenchmarksClient({ models }: Props) {
             </span>
             <span className="text-xs text-muted hidden sm:block">Data: {DATA_DATE}</span>
           </div>
+          <ThemeToggle />
         </div>
       </nav>
 

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { FUEL_DATA, findState, findCity, DATA_DATE, type StateData, type CityPrice } from "../data/fuelData";
 import PriceTrendChart from "./PriceTrendChart";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type LocationStatus = "idle" | "detecting" | "found" | "error" | "denied";
 
@@ -104,6 +105,8 @@ export default function FuelPricesClient() {
             </div>
             <span className="font-semibold text-sm">Fuel Prices India</span>
           </div>
+          <div className="ml-auto" />
+          <ThemeToggle />
         </div>
       </nav>
 
