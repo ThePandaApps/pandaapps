@@ -393,7 +393,7 @@ export default function AIBenchmarksClient({ models }: Props) {
 
   /* ── state ── */
   const [view, setView] = useState<ViewTab>("charts");
-  const [selectedBench, setSelectedBench] = useState<BenchKey>("aaIndex");
+  const [selectedBench, setSelectedBench] = useState<BenchKey>("swe");
   const [sortKey, setSortKey] = useState<SortKey>("arenaElo");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [search, setSearch] = useState("");
