@@ -1,14 +1,18 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Frontier AI Model Benchmark Data — March 2026
+// Frontier AI Model Benchmark Data — 15 March 2026
 //
 // All scores independently verified from official leaderboards:
-//   Arena ELO     – arena.ai  Text Arena overall  (March 2, 2026 snapshot)
-//   SWE-bench V   – swebench.com  mini-SWE-agent  (Feb 2026)
-//   ARC-AGI 2     – arcprize.org  public val, best CoT score  (Feb 2026)
-//   GPQA Diamond  – artificialanalysis.ai / official model reports
-//   AA Index      – artificialanalysis.ai  Intelligence Index v4.0
+//   Arena ELO      – arena.ai  Text Arena overall  (March 2, 2026 snapshot)
+//   SWE-bench V    – swebench.com  mini-SWE-agent  (Feb 2026)
+//   ARC-AGI 2      – arcprize.org  public val, best CoT score  (Feb 2026)
+//   GPQA Diamond   – artificialanalysis.ai / official model reports
+//   AA Index       – artificialanalysis.ai  Intelligence Index v4.0
+//   LiveCodeBench  – livecodebench.github.io  code generation (Mar 2026)
+//   TerminalBench  – tbench.ai  TerminalBench 2.0  (Mar 2026)
+//   τ-Bench        – taubench.com  retail domain  (Mar 2026)
+//   SciCode        – scicode-bench.github.io  with background  (Feb 2026)
 //
-// Last verified: 3 March 2026
+// Last verified: 15 March 2026
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type ModelTag = "coding" | "reasoning" | "multimodal" | "chat";
@@ -30,6 +34,10 @@ export type BenchmarkModel = {
   arcagi2: number | null;
   arenaElo: number | null;
   aaIndex: number | null;
+  livecodebench: number | null;
+  terminalbench: number | null;
+  taubench: number | null;
+  scicode: number | null;
 };
 
 export const BENCHMARK_SOURCES = {
@@ -83,6 +91,46 @@ export const BENCHMARK_SOURCES = {
     source: "Artificial Analysis",
     sourceUrl: "https://artificialanalysis.ai/leaderboards/models",
   },
+  livecodebench: {
+    key: "livecodebench" as const,
+    label: "LiveCode",
+    fullName: "LiveCodeBench",
+    desc: "Contamination-free coding benchmark using problems from competitive programming contests. Continuously updated.",
+    unit: "%",
+    max: 100,
+    source: "livecodebench.github.io",
+    sourceUrl: "https://livecodebench.github.io/leaderboard.html",
+  },
+  terminalbench: {
+    key: "terminalbench" as const,
+    label: "Terminal",
+    fullName: "TerminalBench 2.0",
+    desc: "89 real-world tasks in containerised terminal environments — software eng, ML, security, data science.",
+    unit: "%",
+    max: 100,
+    source: "tbench.ai leaderboard",
+    sourceUrl: "https://tbench.ai/leaderboard",
+  },
+  taubench: {
+    key: "taubench" as const,
+    label: "\u03C4-Bench",
+    fullName: "\u03C4-Bench (Retail)",
+    desc: "Tool-agent-user interaction benchmark. Tests policy adherence and tool use in real-world retail scenarios.",
+    unit: "%",
+    max: 100,
+    source: "taubench.com",
+    sourceUrl: "https://taubench.com",
+  },
+  scicode: {
+    key: "scicode" as const,
+    label: "SciCode",
+    fullName: "SciCode",
+    desc: "338 sub-tasks from 80 real research problems across 16 scientific disciplines. Background-assisted evaluation.",
+    unit: "%",
+    max: 100,
+    source: "scicode-bench.github.io",
+    sourceUrl: "https://scicode-bench.github.io",
+  },
 };
 
 export const BENCHMARK_COLS = Object.values(BENCHMARK_SOURCES);
@@ -104,6 +152,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 69.2,
     arenaElo: 1504,
     aaIndex: 53,
+    livecodebench: 76.0,
+    terminalbench: 81.8,
+    taubench: 91.9,
+    scicode: 18.5,
   },
   {
     id: "claude-sonnet-4-6",
@@ -120,6 +172,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 60.4,
     arenaElo: 1461,
     aaIndex: 52,
+    livecodebench: null,
+    terminalbench: 59.6,
+    taubench: null,
+    scicode: null,
   },
   {
     id: "claude-opus-4-5",
@@ -136,6 +192,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 37.6,
     arenaElo: 1466,
     aaIndex: 42,
+    livecodebench: 87.1,
+    terminalbench: 58.4,
+    taubench: null,
+    scicode: 24.6,
   },
   {
     id: "claude-sonnet-4-5",
@@ -152,6 +212,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 13.6,
     arenaElo: 1450,
     aaIndex: null,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: 86.2,
+    scicode: 18.5,
   },
   // ── Google ──────────────────────────────────────────────────────────────
   {
@@ -169,6 +233,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 77.1,
     arenaElo: 1500,
     aaIndex: 57,
+    livecodebench: 87.0,
+    terminalbench: 67.4,
+    taubench: 85.3,
+    scicode: 26.2,
   },
   {
     id: "gemini-3-pro",
@@ -185,6 +253,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 31.1,
     arenaElo: 1486,
     aaIndex: 41,
+    livecodebench: 91.7,
+    terminalbench: 78.4,
+    taubench: null,
+    scicode: 21.5,
   },
   {
     id: "gemini-3-flash",
@@ -201,6 +273,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 33.6,
     arenaElo: 1473,
     aaIndex: 46,
+    livecodebench: 90.8,
+    terminalbench: null,
+    taubench: null,
+    scicode: 24.6,
   },
   // ── OpenAI ─────────────────────────────────────────────────────────────
   {
@@ -218,6 +294,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 43.3,
     arenaElo: 1479,
     aaIndex: 51,
+    livecodebench: 88.9,
+    terminalbench: null,
+    taubench: 82.0,
+    scicode: null,
   },
   {
     id: "gpt-5-1",
@@ -234,6 +314,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 17.6,
     arenaElo: 1457,
     aaIndex: null,
+    livecodebench: 86.8,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   {
     id: "o3",
@@ -250,6 +334,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 6.5,
     arenaElo: 1432,
     aaIndex: 38,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   // ── xAI ─────────────────────────────────────────────────────────────────
   {
@@ -267,6 +355,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: null,
     arenaElo: 1462,
     aaIndex: 39,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   // ── Z.ai ────────────────────────────────────────────────────────────────
   {
@@ -285,6 +377,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 4.9,
     arenaElo: 1455,
     aaIndex: 50,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   // ── Alibaba ──────────────────────────────────────────────────────────────
   {
@@ -303,6 +399,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: null,
     arenaElo: 1452,
     aaIndex: 45,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   {
     id: "qwen-3-235b",
@@ -320,6 +420,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 1.3,
     arenaElo: 1422,
     aaIndex: 30,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   // ── Moonshot ─────────────────────────────────────────────────────────────
   {
@@ -338,6 +442,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 11.8,
     arenaElo: 1451,
     aaIndex: 47,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   // ── DeepSeek ─────────────────────────────────────────────────────────────
   {
@@ -356,6 +464,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 4.0,
     arenaElo: 1420,
     aaIndex: 42,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   {
     id: "deepseek-r1-0528",
@@ -373,6 +485,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 1.1,
     arenaElo: 1419,
     aaIndex: 27,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   // ── MiniMax ──────────────────────────────────────────────────────────────
   {
@@ -390,6 +506,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 4.9,
     arenaElo: 1400,
     aaIndex: 42,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   // ── Mistral ──────────────────────────────────────────────────────────────
   {
@@ -407,6 +527,10 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: null,
     arenaElo: 1414,
     aaIndex: 23,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
   // ── Meta ─────────────────────────────────────────────────────────────────
   {
@@ -425,7 +549,11 @@ export const MODELS: BenchmarkModel[] = [
     arcagi2: 0.0,
     arenaElo: 1327,
     aaIndex: 18,
+    livecodebench: null,
+    terminalbench: null,
+    taubench: null,
+    scicode: null,
   },
 ];
 
-export const DATA_DATE = "March 2026";
+export const DATA_DATE = "15 March 2026";

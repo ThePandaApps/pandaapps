@@ -223,11 +223,15 @@ export async function fetchFreshModels(): Promise<BenchmarkModel[]> {
         canRunLocally: provider.canRunLocally,
         tags,
         isAutoDiscovered: true,
-        gpqa:     null,
-        swe:      null,
-        arcagi2:  null,
-        arenaElo: Math.round(elo),
-        aaIndex:  null,
+        gpqa:           null,
+        swe:            null,
+        arcagi2:        null,
+        arenaElo:       Math.round(elo),
+        aaIndex:        null,
+        livecodebench:  null,
+        terminalbench:  null,
+        taubench:       null,
+        scicode:        null,
       };
 
       newModels.push(newModel);

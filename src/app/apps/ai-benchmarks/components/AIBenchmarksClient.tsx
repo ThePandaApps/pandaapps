@@ -42,7 +42,7 @@ const pc = (p: string) => PCOLOR[p] || "#8b5cf6";
 
 /* ═══════════════ Types ═══════════════ */
 
-type BenchKey = "gpqa" | "swe" | "arcagi2" | "arenaElo" | "aaIndex";
+type BenchKey = "gpqa" | "swe" | "arcagi2" | "arenaElo" | "aaIndex" | "livecodebench" | "terminalbench" | "taubench" | "scicode";
 type SortKey = "name" | "provider" | BenchKey;
 type SortDir = "asc" | "desc";
 type TabFilter = "all" | "free" | "opensource" | "local";
@@ -61,6 +61,7 @@ function normVal(v: number | null, key: BenchKey): number | null {
   if (v === null) return null;
   if (key === "arenaElo") return Math.min(100, Math.max(0, ((v - 1250) / 300) * 100));
   if (key === "aaIndex") return Math.min(100, Math.max(0, (v / 60) * 100));
+  if (key === "scicode") return Math.min(100, Math.max(0, (v / 30) * 100)); // SciCode is very hard, max ~30%
   return v;
 }
 
@@ -88,6 +89,16 @@ function fmt(v: number | null, key: BenchKey): string {
   if (key === "arenaElo" || key === "aaIndex") return v.toFixed(0);
   return v.toFixed(1) + "%";
 }
+
+/* Map of non-percentage bench keys to safe x-axis domains */
+const SPECIAL_DOMAIN: Record<string, (data: { value: number }[]) => [number, number]> = {
+  arenaElo: (d) => [
+    Math.floor((d[d.length - 1]?.value ?? 1300) / 10) * 10 - 10,
+    Math.ceil((d[0]?.value ?? 1500) / 10) * 10 + 10,
+  ],
+  aaIndex: (d) => [0, Math.ceil((d[0]?.value ?? 60) / 5) * 5 + 5],
+  scicode: (d) => [0, Math.ceil((d[0]?.value ?? 30) / 5) * 5 + 5],
+};
 
 function SortIcon({ col, sortKey, sortDir }: { col: string; sortKey: SortKey; sortDir: SortDir }) {
   if (col !== sortKey) return <ChevronsUpDown className="h-3 w-3 opacity-30" />;
@@ -158,15 +169,9 @@ function BenchmarkBarChart({ benchKey, models }: { benchKey: BenchKey; models: B
   if (data.length === 0)
     return <p className="text-muted text-sm py-8 text-center">No data available for this benchmark</p>;
 
-  const xDomain: [number, number] =
-    benchKey === "arenaElo"
-      ? [
-          Math.floor((data[data.length - 1]?.value ?? 1300) / 10) * 10 - 10,
-          Math.ceil((data[0]?.value ?? 1500) / 10) * 10 + 10,
-        ]
-      : benchKey === "aaIndex"
-        ? [0, Math.ceil((data[0]?.value ?? 60) / 5) * 5 + 5]
-        : [0, 100];
+  const xDomain: [number, number] = SPECIAL_DOMAIN[benchKey]
+    ? SPECIAL_DOMAIN[benchKey](data)
+    : [0, 100];
 
   return (
     <div>
@@ -215,7 +220,7 @@ function BenchmarkBarChart({ benchKey, models }: { benchKey: BenchKey; models: B
                   formatter={(v: unknown) => {
                     const n = Number(v);
                     if (!isFinite(n)) return "";
-                    return benchKey === "arenaElo" || benchKey === "aaIndex" ? n.toFixed(0) : n.toFixed(1) + "%";
+                    return (benchKey === "arenaElo" || benchKey === "aaIndex") ? n.toFixed(0) : n.toFixed(1) + "%";
                   }}
                 />
               </Bar>
@@ -244,11 +249,15 @@ function RadarCompareChart({ selectedIds, models }: { selectedIds: string[]; mod
 
   const radarData = useMemo(() => {
     const benchmarks: { key: BenchKey; label: string }[] = [
-      { key: "gpqa", label: "GPQA Diamond" },
+      { key: "gpqa", label: "GPQA" },
       { key: "swe", label: "SWE-bench" },
       { key: "arcagi2", label: "ARC-AGI 2" },
       { key: "arenaElo", label: "Arena ELO" },
       { key: "aaIndex", label: "AA Index" },
+      { key: "livecodebench", label: "LiveCode" },
+      { key: "terminalbench", label: "Terminal" },
+      { key: "taubench", label: "\u03C4-Bench" },
+      { key: "scicode", label: "SciCode" },
     ];
 
     // Min-max normalization per benchmark (relative to all models in the dataset)
@@ -501,8 +510,8 @@ export default function AIBenchmarksClient({ models }: Props) {
         <div className="space-y-2">
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">AI Model Benchmarks</h1>
           <p className="text-muted max-w-2xl text-sm">
-            Verified scores for <strong className="text-foreground">{MODELS.length} frontier models</strong> across 5
-            key benchmarks &mdash; sourced from official leaderboards. Charts auto-refresh daily via ISR.
+            Verified scores for <strong className="text-foreground">{MODELS.length} frontier models</strong> across {BENCHMARK_COLS.length}
+            {" "}key benchmarks &mdash; sourced from official leaderboards. Charts auto-refresh daily via ISR.
           </p>
         </div>
 
@@ -956,14 +965,14 @@ export default function AIBenchmarksClient({ models }: Props) {
             </span>
           ))}
           <span className="text-muted ml-1">
-            &mdash; Arena ELO normalised to 1250&ndash;1550 &middot; AA Index to 0&ndash;60 for colour
+            &mdash; Arena ELO normalised to 1250&ndash;1550 &middot; AA Index to 0&ndash;60 &middot; SciCode to 0&ndash;30 for colour
           </span>
         </div>
 
         {/* ── Benchmark Details ── */}
         <div className="space-y-2">
           <h3 className="text-sm font-bold text-foreground">Benchmark Details</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
             {BENCHMARK_COLS.map(col => (
               <a
                 key={col.key}
