@@ -232,6 +232,13 @@ export async function fetchFreshModels(): Promise<BenchmarkModel[]> {
         terminalbench:  null,
         taubench:       null,
         scicode:        null,
+        costPer1M:     null,
+        throughput:    null,
+        ttft:          null,
+        contextWindow: null,
+        hle:           null,
+        frontierMath:  null,
+        gdpVal:        null,
       };
 
       newModels.push(newModel);

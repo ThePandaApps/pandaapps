@@ -5,8 +5,9 @@ import Link from "next/link";
 import {
   Bot, ChevronLeft, ChevronDown, ChevronUp, ChevronsUpDown,
   Info, ExternalLink, Search, Lock, Cpu, Gift,
-  BarChart3, Target, Table2, ArrowUpRight, RefreshCw,
+  BarChart3, Zap, TrendingUp, LayoutList, ArrowUpRight, RefreshCw,
   Code2, Brain, Eye, MessageSquare, HardDrive, Filter, Sparkles,
+  Coins, Activity, Layers,
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -42,11 +43,21 @@ const pc = (p: string) => PCOLOR[p] || "#8b5cf6";
 
 /* ═══════════════ Types ═══════════════ */
 
-type BenchKey = "gpqa" | "swe" | "arcagi2" | "arenaElo" | "aaIndex" | "livecodebench" | "terminalbench" | "taubench" | "scicode";
+type BenchKey = "gpqa" | "swe" | "arcagi2" | "arenaElo" | "aaIndex" | "livecodebench"
+  | "terminalbench"
+  | "taubench"
+  | "scicode"
+  | "costPer1M"
+  | "throughput"
+  | "ttft"
+  | "contextWindow"
+  | "hle"
+  | "frontierMath"
+  | "gdpVal";
 type SortKey = "name" | "provider" | BenchKey;
 type SortDir = "asc" | "desc";
 type TabFilter = "all" | "free" | "opensource" | "local";
-type ViewTab = "charts" | "radar" | "table";
+type ViewTab = "charts" | "economy" | "scatter" | "table";
 
 const TAG_CONFIG: { id: ModelTag; label: string; icon: React.ReactNode; color: string }[] = [
   { id: "coding", label: "Coding", icon: <Code2 className="h-3 w-3" />, color: "bg-green-500/15 text-green-600 dark:text-green-400 border-green-500/40" },
@@ -59,10 +70,26 @@ const TAG_CONFIG: { id: ModelTag; label: string; icon: React.ReactNode; color: s
 
 function normVal(v: number | null, key: BenchKey): number | null {
   if (v === null) return null;
-  if (key === "arenaElo") return Math.min(100, Math.max(0, ((v - 1250) / 300) * 100));
-  if (key === "aaIndex") return Math.min(100, Math.max(0, (v / 60) * 100));
-  if (key === "scicode") return Math.min(100, Math.max(0, (v / 30) * 100)); // SciCode is very hard, max ~30%
-  return v;
+  switch (key) {
+    case "arenaElo":
+      return Math.min(100, Math.max(0, ((v - 1250) / 300) * 100));
+    case "aaIndex":
+      return Math.min(100, Math.max(0, (v / 60) * 100));
+    case "scicode":
+      return Math.min(100, Math.max(0, (v / 30) * 100)); // SciCode is very hard, max ~30%
+    case "costPer1M":
+      return Math.min(100, Math.max(0, 100 - (v / 15) * 100)); // Lower is better, max 15 -> 0, 0 -> 100
+    case "throughput":
+      return Math.min(100, Math.max(0, (v / 200) * 100)); // Higher is better, max 200
+    case "ttft":
+      return Math.min(100, Math.max(0, 100 - (v / 2.0) * 100)); // Lower is better, max 2.0 -> 0, 0 -> 100
+    case "contextWindow":
+      return Math.min(100, Math.max(0, (v / 1000) * 100)); // Max 1M tokens (K-denominated, so 1000 = 1M)
+    case "gdpVal":
+      return Math.min(100, Math.max(0, ((v - 1000) / 1000) * 100)); // 1000 -> 0, 2000 -> 100
+    default:
+      return v;
+  }
 }
 
 function scoreColor(v: number | null, key: BenchKey): string {
@@ -86,8 +113,14 @@ function scoreBg(v: number | null, key: BenchKey): string {
 
 function fmt(v: number | null, key: BenchKey): string {
   if (v === null) return "\u2014";
-  if (key === "arenaElo" || key === "aaIndex") return v.toFixed(0);
-  return v.toFixed(1) + "%";
+  const k = key; // Use a shorter alias for switch
+  if (k === "arenaElo") return Math.round(v).toString();
+  if (k === "scicode" || k === "hle" || k === "frontierMath") return `${v.toFixed(1)}%`;
+  if (k === "costPer1M") return `$${v.toFixed(2)}`;
+  if (k === "throughput") return `${Math.round(v)} t/s`;
+  if (k === "contextWindow") return v >= 1000 ? `${v / 1000}M` : `${v}k`;
+  if (k === "gdpVal") return Math.round(v).toString();
+  return `${v.toFixed(1)}%`;
 }
 
 /* Map of non-percentage bench keys to safe x-axis domains */
@@ -274,8 +307,7 @@ function RadarCompareChart({ selectedIds, models }: { selectedIds: string[]; mod
       const { min, max } = ranges[b.key];
       const range = max - min || 1;
       selectedModels.forEach(m => {
-        const val = m[b.key];
-        row[m.id] = val !== null ? Math.round(((val - min) / range) * 100) : 0;
+        row[m.id] = normVal(m[b.key], b.key) ?? 0;
       });
       return row;
     });
@@ -371,18 +403,90 @@ function EloVsIndexScatter({ models }: { models: BenchmarkModel[] }) {
           </ResponsiveContainer>
         </div>
       </div>
-      {/* Provider legend */}
-      <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-[10px]">
-        {[...new Set(data.map(d => d.provider))].map(p => (
-          <span key={p} className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: pc(p) }} />
-            <span className="text-muted">{p}</span>
-          </span>
-        ))}
+    </div>
+  );
+}
+
+/* ═══════════════ Chart: Scatter — Intelligence vs Cost ═══════════════ */
+
+function ValueVsCostScatter({ models }: { models: BenchmarkModel[] }) {
+  const data = useMemo(
+    () =>
+      models
+        .filter(m => m.aaIndex !== null && m.costPer1M !== null)
+        .map(m => ({
+          name: m.name,
+          cost: m.costPer1M!,
+          intelligence: m.aaIndex!,
+          provider: m.provider,
+          fill: pc(m.provider),
+        })),
+    [models],
+  );
+
+  return (
+    <div>
+      <h3 className="text-lg font-bold mb-1">Value for Money</h3>
+      <p className="text-xs text-muted mb-4">
+        Intelligence Index vs Cost ($/1M tokens). Models in the <b>top-left</b> offer the best value (Smart & Cheap).
+      </p>
+      <div className="overflow-x-auto -mx-2 px-2">
+        <div style={{ minWidth: 500 }}>
+          <ResponsiveContainer width="100%" height={400}>
+            <ScatterChart margin={{ top: 10, right: 30, bottom: 30, left: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#6b728022" />
+              <XAxis
+                type="number"
+                dataKey="cost"
+                name="Cost"
+                domain={[0, "dataMax + 2"]}
+                tick={{ fontSize: 11, fill: "#9ca3af" }}
+                label={{ value: "\u2190 Lower Cost ($/1M)", position: "bottom", offset: 15, fontSize: 11, fill: "#6b7280" }}
+                reversed
+              />
+              <YAxis
+                type="number"
+                dataKey="intelligence"
+                name="AA Index"
+                domain={[0, 60]}
+                tick={{ fontSize: 11, fill: "#9ca3af" }}
+                label={{
+                  value: "Intelligence \u2192",
+                  angle: -90,
+                  position: "insideLeft",
+                  offset: 0,
+                  fontSize: 11,
+                  fill: "#6b7280",
+                }}
+              />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const d = payload[0].payload;
+                    return (
+                      <div className="rounded-lg border border-border bg-popover p-2 shadow-md text-xs">
+                        <p className="font-bold text-foreground mb-1">{d.name}</p>
+                        <p className="text-muted"><span className="text-foreground">Cost:</span> ${d.cost.toFixed(2)} / 1M</p>
+                        <p className="text-muted"><span className="text-foreground">Index:</span> {d.intelligence}</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Scatter data={data}>
+                {data.map((e, i) => (
+                  <Cell key={i} fill={e.fill} />
+                ))}
+              </Scatter>
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
 }
+
 
 /* ═══════════════ Main Component ═══════════════ */
 
@@ -650,8 +754,9 @@ export default function AIBenchmarksClient({ models }: Props) {
           {(
             [
               { id: "charts", icon: <BarChart3 className="h-3.5 w-3.5" />, label: "Charts" },
-              { id: "radar", icon: <Target className="h-3.5 w-3.5" />, label: "Compare" },
-              { id: "table", icon: <Table2 className="h-3.5 w-3.5" />, label: "Table" },
+              { id: "economy", icon: <Zap className="h-3.5 w-3.5" />, label: "Economy" },
+              { id: "scatter", icon: <TrendingUp className="h-3.5 w-3.5" />, label: "Scatter" },
+              { id: "table", icon: <LayoutList className="h-3.5 w-3.5" />, label: "Table" },
             ] as { id: ViewTab; icon: React.ReactNode; label: string }[]
           ).map(v => (
             <button
@@ -692,53 +797,109 @@ export default function AIBenchmarksClient({ models }: Props) {
               <BenchmarkBarChart benchKey={selectedBench} models={filtered} />
             </div>
 
-            {/* Scatter plot */}
+            {/* Scatter plot snippet */}
             <div className="rounded-2xl border border-border/40 bg-card/30 p-4 sm:p-6">
               <EloVsIndexScatter models={filtered} />
             </div>
           </div>
         )}
 
-        {/* ════════════════ RADAR VIEW ════════════════ */}
-        {view === "radar" && (
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-border/40 bg-card/30 p-4 sm:p-6">
-              <h3 className="text-lg font-bold mb-1">Model Comparison Radar</h3>
-              <p className="text-xs text-muted mb-4">
-                Select models to compare across all 5 benchmarks. Values normalised to 0&ndash;100 relative to the
-                dataset.
-              </p>
-
-              <RadarCompareChart selectedIds={radarModels} models={filtered} />
-
-              {/* Model selector checkboxes */}
-              <div className="mt-6 pt-4 border-t border-border/30">
-                <p className="text-xs font-medium text-muted mb-3">Select models to compare (max 8)</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-2 gap-x-4">
-                  {MODELS.map(m => (
-                    <label
-                      key={m.id}
-                      className="flex items-center gap-2 text-xs cursor-pointer hover:text-foreground transition-colors"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={radarModels.includes(m.id)}
-                        className="accent-violet-500 w-3.5 h-3.5"
-                        onChange={e => {
-                          if (e.target.checked && radarModels.length < 8)
-                            setRadarModels(p => [...p, m.id]);
-                          else if (!e.target.checked) setRadarModels(p => p.filter(id => id !== m.id));
-                        }}
-                      />
-                      <span
-                        className="w-2 h-2 rounded-full shrink-0"
-                        style={{ backgroundColor: pc(m.provider) }}
-                      />
-                      <span className="text-muted truncate">{m.name}</span>
-                    </label>
-                  ))}
+        {/* ════════════════ ECONOMY VIEW ════════════════ */}
+        {view === "economy" && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="rounded-2xl border border-border/40 bg-card p-4">
+                <p className="text-xs text-muted mb-1 flex items-center gap-1">
+                  <Coins className="h-3 w-3 text-amber-500" /> Best Value ($)
+                </p>
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">$0.10</p>
+                    <p className="text-[10px] text-muted">per 1M tokens</p>
+                  </div>
+                  <span className="text-[10px] font-medium bg-emerald-500/10 text-emerald-500 px-1.5 py-0.5 rounded">DeepSeek/Flash</span>
                 </div>
               </div>
+              <div className="rounded-2xl border border-border/40 bg-card p-4">
+                <p className="text-xs text-muted mb-1 flex items-center gap-1">
+                  <Zap className="h-3 w-3 text-blue-500" /> Max Speed
+                </p>
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">180</p>
+                    <p className="text-[10px] text-muted">tokens/sec</p>
+                  </div>
+                  <span className="text-[10px] font-medium bg-blue-500/10 text-blue-500 px-1.5 py-0.5 rounded">Gemini 3 Flash</span>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-border/40 bg-card p-4">
+                <p className="text-xs text-muted mb-1 flex items-center gap-1">
+                  <Activity className="h-3 w-3 text-green-500" /> Lowest Latency
+                </p>
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">0.2s</p>
+                    <p className="text-[10px] text-muted">to first token</p>
+                  </div>
+                  <span className="text-[10px] font-medium bg-green-500/10 text-green-500 px-1.5 py-0.5 rounded">Instant</span>
+                </div>
+              </div>
+              <div className="rounded-2xl border border-border/40 bg-card p-4">
+                <p className="text-xs text-muted mb-1 flex items-center gap-1">
+                  <Layers className="h-3 w-3 text-purple-500" /> Context Depth
+                </p>
+                <div className="flex items-end justify-between">
+                  <div>
+                    <p className="text-2xl font-bold text-foreground">1M+</p>
+                    <p className="text-[10px] text-muted">token window</p>
+                  </div>
+                  <span className="text-[10px] font-medium bg-purple-500/10 text-purple-500 px-1.5 py-0.5 rounded">Claude/Gemini</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-border/40 bg-card overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="bg-muted/30 border-b border-border/40 font-medium">
+                      <th className="px-4 py-3 cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort("name")}>Model</th>
+                      <th className="px-4 py-3 cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort("costPer1M")}>Cost/1M</th>
+                      <th className="px-4 py-3 cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort("throughput")}>Speed (t/s)</th>
+                      <th className="px-4 py-3 cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort("ttft")}>TTFT (sec)</th>
+                      <th className="px-4 py-3 cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort("contextWindow")}>Context</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/20">
+                    {sorted.map(m => (
+                      <tr key={m.id} className="hover:bg-muted/10 transition-colors">
+                        <td className="px-4 py-3 font-medium text-foreground">
+                          <div className="flex flex-col">
+                            <span>{m.name}</span>
+                            <span className="text-[10px] text-muted font-normal">{m.provider}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">{fmt(m.costPer1M, "costPer1M")}</td>
+                        <td className="px-4 py-3">{fmt(m.throughput, "throughput")}</td>
+                        <td className="px-4 py-3 font-mono">{m.ttft ? `${m.ttft.toFixed(2)}s` : "\u2014"}</td>
+                        <td className="px-4 py-3 font-mono">{fmt(m.contextWindow, "contextWindow")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ════════════════ SCATTER VIEW ════════════════ */}
+        {view === "scatter" && (
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <div className="rounded-2xl border border-border/40 bg-card p-6">
+              <ValueVsCostScatter models={MODELS} />
+            </div>
+            <div className="rounded-2xl border border-border/40 bg-card p-6">
+              <EloVsIndexScatter models={MODELS} />
             </div>
           </div>
         )}

@@ -38,6 +38,15 @@ export type BenchmarkModel = {
   terminalbench: number | null;
   taubench: number | null;
   scicode: number | null;
+  // Economy & Performance
+  costPer1M: number | null;   // Blended cost ($) per 1M tokens
+  throughput: number | null;  // Tokens per second
+  ttft: number | null;        // Time to first token (seconds)
+  contextWindow: number | null; // k-tokens (1000 = 1M)
+  // Next-Gen Benchmarks
+  hle: number | null;         // Humanity's Last Exam (%)
+  frontierMath: number | null; // FrontierMath (%)
+  gdpVal: number | null;      // Economic Value ELO
 };
 
 export const BENCHMARK_SOURCES = {
@@ -131,6 +140,56 @@ export const BENCHMARK_SOURCES = {
     source: "scicode-bench.github.io",
     sourceUrl: "https://scicode-bench.github.io",
   },
+  costPer1M: {
+    key: "costPer1M" as const,
+    label: "Cost/1M",
+    fullName: "Cost per 1M Tokens",
+    desc: "Blended average cost for 1M input + output tokens. Lower = more economical.",
+    unit: "$",
+    max: 15,
+    source: "Provider Pricing",
+    sourceUrl: "#",
+  },
+  throughput: {
+    key: "throughput" as const,
+    label: "Speed",
+    fullName: "Throughput",
+    desc: "Average generation speed in tokens per second. Higher = faster responses.",
+    unit: "t/s",
+    max: 200,
+    source: "Artificial Analysis",
+    sourceUrl: "https://artificialanalysis.ai/models",
+  },
+  hle: {
+    key: "hle" as const,
+    label: "HLE",
+    fullName: "Humanity's Last Exam",
+    desc: "2,500 PhD-level multidisciplinary questions. Designed to be unsearchable.",
+    unit: "%",
+    max: 100,
+    source: "Epoch AI / Center for AI Safety",
+    sourceUrl: "https://humanityslastexam.ai",
+  },
+  frontierMath: {
+    key: "frontierMath" as const,
+    label: "F-Math",
+    fullName: "FrontierMath",
+    desc: "Research-level mathematical problems that top models previously scored ~0%.",
+    unit: "%",
+    max: 100,
+    source: "Epoch AI",
+    sourceUrl: "https://epoch.ai/frontiermath",
+  },
+  gdpVal: {
+    key: "gdpVal" as const,
+    label: "GDPval",
+    fullName: "GDPval (Economic Value)",
+    desc: "ELO rating based on performance in 44 knowledge-work occupations vs human experts.",
+    unit: "pts",
+    max: 2000,
+    source: "OpenAI / Artificial Analysis",
+    sourceUrl: "https://openai.com/index/gdpval",
+  },
 };
 
 export const BENCHMARK_COLS = Object.values(BENCHMARK_SOURCES);
@@ -156,6 +215,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: 81.8,
     taubench: 91.9,
     scicode: 18.5,
+    costPer1M: 10.0,
+    throughput: 45,
+    ttft: 0.6,
+    contextWindow: 200,
+    hle: 53.0,
+    frontierMath: null,
+    gdpVal: 1606,
   },
   {
     id: "claude-sonnet-4-6",
@@ -176,6 +242,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: 59.6,
     taubench: null,
     scicode: null,
+    costPer1M: 3.0,
+    throughput: 85,
+    ttft: 0.4,
+    contextWindow: 1000,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   {
     id: "claude-opus-4-5",
@@ -196,6 +269,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: 58.4,
     taubench: null,
     scicode: 24.6,
+    costPer1M: 15.0,
+    throughput: 38,
+    ttft: 0.8,
+    contextWindow: 1000,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   {
     id: "claude-sonnet-4-5",
@@ -216,6 +296,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: 86.2,
     scicode: 18.5,
+    costPer1M: 3.0,
+    throughput: 90,
+    ttft: 0.4,
+    contextWindow: 200,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   // ── Google ──────────────────────────────────────────────────────────────
   {
@@ -237,6 +324,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: 67.4,
     taubench: 85.3,
     scicode: 26.2,
+    costPer1M: 2.0,
+    throughput: 65,
+    ttft: 0.5,
+    contextWindow: 1000,
+    hle: 51.4,
+    frontierMath: null,
+    gdpVal: 1317,
   },
   {
     id: "gemini-3-pro",
@@ -257,6 +351,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: 78.4,
     taubench: null,
     scicode: 21.5,
+    costPer1M: 10.0,
+    throughput: 42,
+    ttft: 0.7,
+    contextWindow: 200,
+    hle: 37.5,
+    frontierMath: null,
+    gdpVal: null,
   },
   {
     id: "gemini-3-flash",
@@ -277,6 +378,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: 24.6,
+    costPer1M: 0.1,
+    throughput: 180,
+    ttft: 0.2,
+    contextWindow: 1000,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   // ── OpenAI ─────────────────────────────────────────────────────────────
   {
@@ -298,6 +406,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: 82.0,
     scicode: null,
+    costPer1M: 10.0,
+    throughput: 55,
+    ttft: 0.5,
+    contextWindow: 400,
+    hle: 50.0,
+    frontierMath: 31.0,
+    gdpVal: 1462,
   },
   {
     id: "gpt-5-1",
@@ -318,6 +433,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 3.0,
+    throughput: 75,
+    ttft: 0.5,
+    contextWindow: 400,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   {
     id: "o3",
@@ -338,6 +460,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 10.0,
+    throughput: 40,
+    ttft: 0.8,
+    contextWindow: 400,
+    hle: null,
+    frontierMath: 25.2,
+    gdpVal: null,
   },
   // ── xAI ─────────────────────────────────────────────────────────────────
   {
@@ -359,6 +488,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 5.0,
+    throughput: 110,
+    ttft: 0.3,
+    contextWindow: 128,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   // ── Z.ai ────────────────────────────────────────────────────────────────
   {
@@ -381,6 +517,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 0.1,
+    throughput: 150,
+    ttft: 0.2,
+    contextWindow: 128,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   // ── Alibaba ──────────────────────────────────────────────────────────────
   {
@@ -403,6 +546,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 0.1,
+    throughput: 160,
+    ttft: 0.2,
+    contextWindow: 128,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   {
     id: "qwen-3-235b",
@@ -424,6 +574,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 0.1,
+    throughput: 140,
+    ttft: 0.3,
+    contextWindow: 128,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   // ── Moonshot ─────────────────────────────────────────────────────────────
   {
@@ -446,6 +603,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 0.1,
+    throughput: 130,
+    ttft: 0.3,
+    contextWindow: 200,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   // ── DeepSeek ─────────────────────────────────────────────────────────────
   {
@@ -468,6 +632,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 0.1,
+    throughput: 120,
+    ttft: 0.4,
+    contextWindow: 128,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   {
     id: "deepseek-r1-0528",
@@ -489,6 +660,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 0.1,
+    throughput: 35,
+    ttft: 2.0,
+    contextWindow: 128,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   // ── MiniMax ──────────────────────────────────────────────────────────────
   {
@@ -510,6 +688,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 0.1,
+    throughput: 160,
+    ttft: 0.2,
+    contextWindow: 128,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   // ── Mistral ──────────────────────────────────────────────────────────────
   {
@@ -531,6 +716,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 1.0,
+    throughput: 110,
+    ttft: 0.3,
+    contextWindow: 128,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
   // ── Meta ─────────────────────────────────────────────────────────────────
   {
@@ -553,6 +745,13 @@ export const MODELS: BenchmarkModel[] = [
     terminalbench: null,
     taubench: null,
     scicode: null,
+    costPer1M: 0.1,
+    throughput: 100,
+    ttft: 0.4,
+    contextWindow: 128,
+    hle: null,
+    frontierMath: null,
+    gdpVal: null,
   },
 ];
 
